@@ -29,51 +29,44 @@ type resBody struct {
 const DefaultExecTime = 20
 const DefaultTimeout = 10
 
-func checkin() (error, string) {
+var req = buildRequest()
+var cookies = buildCookies(viper.GetString("cookie"))
+
+func checkin() error {
 	err := configInit()
 	if err != nil {
 		panic(err)
 	}
-	cookie := viper.GetString("cookie") //Gets the configured cookie
-	if cookie == "" {
-		panic("cookie is nil")
-	}
-
 	timeout := viper.GetInt("timeout") //Set the request expiration time
 	if timeout <= 0 {
 		timeout = DefaultTimeout
 	}
 
-	req := buildRequest()
-	//set cookie
-
-	/*	closer := req.Body
-		all, _ := ioutil.ReadAll(closer)
-		fmt.Println(string(all))*/
-
 	jar, _ := cookiejar.New(nil)
-	jar.SetCookies(req.URL, buildCookies(cookie))
-
+	jar.SetCookies(req.URL, cookies)
 	client := &http.Client{Jar: jar, Timeout: time.Duration(timeout)}
 	res, err := client.Do(req)
+
 	if err != nil {
-		return err, ""
+		return err
 	}
+
 	if res.Body != nil {
 		defer res.Body.Close()
 	} else {
-		return fmt.Errorf("response is nil"), ""
+		return fmt.Errorf("response is nil")
 	}
+
 	response, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		return err, ""
+		return err
 	}
 	body := &resBody{}
 	err = json.Unmarshal(response, body)
 	if err != nil {
-		return err, ""
+		return err
 	}
-	return nil, body.Message
+	return nil
 }
 
 func buildRequest() *http.Request {
@@ -87,6 +80,9 @@ func buildRequest() *http.Request {
 
 // Parse the string for the cookie
 func buildCookies(tmp string) []*http.Cookie {
+	if tmp == "" {
+		panic("cookie is nil")
+	}
 	results := strings.Split(tmp, ";")
 	cookies := make([]*http.Cookie, len(results))
 	for idx, result := range results {
