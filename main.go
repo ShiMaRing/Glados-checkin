@@ -9,6 +9,7 @@ import (
 )
 
 func main() {
+
 	file, err := os.OpenFile("log.log", os.O_APPEND|os.O_CREATE, 7777)
 	if err != nil {
 		panic("open log file fail")
@@ -19,8 +20,12 @@ func main() {
 	}
 	s := gocron.NewScheduler(time.UTC)
 
-	job, err := s.Every(1).Day().At(execTime).Do(checkin)
+	job, err := s.Every(1).Days().At(execTime).Do(checkin)
+
 	if err != nil {
 		_, _ = fmt.Fprintln(file, fmt.Sprintf("Job: %v, Error: %v", job, err))
 	}
+
+	s.StartBlocking()
+
 }

@@ -29,14 +29,19 @@ type resBody struct {
 const DefaultExecTime = 20
 const DefaultTimeout = 10
 
-var req = buildRequest()
-var cookies = buildCookies(viper.GetString("cookie"))
+var req *http.Request
+var cookies []*http.Cookie
 
-func checkin() error {
+func init() {
 	err := configInit()
 	if err != nil {
 		panic(err)
 	}
+	req = buildRequest()
+	cookies = buildCookies(viper.GetString("cookie"))
+}
+
+func checkin() error {
 	timeout := viper.GetInt("timeout") //Set the request expiration time
 	if timeout <= 0 {
 		timeout = DefaultTimeout
@@ -44,7 +49,7 @@ func checkin() error {
 
 	jar, _ := cookiejar.New(nil)
 	jar.SetCookies(req.URL, cookies)
-	client := &http.Client{Jar: jar, Timeout: time.Duration(timeout)}
+	client := &http.Client{Jar: jar, Timeout: time.Duration(timeout) * time.Second}
 	res, err := client.Do(req)
 
 	if err != nil {
@@ -109,7 +114,7 @@ func configInit() error {
 
 	err := viper.ReadInConfig()
 	if err != nil {
-		return err
+		panic(err)
 	}
 	return nil
 }
