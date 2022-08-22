@@ -36,3 +36,11 @@ nohup glados-checkin &   #启动脚本
 ps aux |grep glados-checkin #查看运行状态
 ```
 
+##### Cookie获取方式
+
+
+
+![image-20220822112222543](https://user-images.githubusercontent.com/97494720/185832376-fe5d70c5-6a93-4e0f-9133-0bd362ee00ff.png)
+
+
+![image-20220822112125795](https://user-images.githubusercontent.com/97494720/185832371-6d577de0-e6e7-4246-8eae-d507456a98a7.png)
