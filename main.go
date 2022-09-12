@@ -8,12 +8,17 @@ import (
 	"time"
 )
 
+var file *os.File
+
+func init() {
+	var err error
+	file, err = os.OpenFile("log.log", os.O_APPEND|os.O_CREATE, 7777)
+	if err != nil {
+		panic(err)
+	}
+}
 func main() {
 
-	file, err := os.OpenFile("log.log", os.O_APPEND|os.O_CREATE, 7777)
-	if err != nil {
-		panic("open log file fail")
-	}
 	execTime := viper.GetString("execTime")
 	if execTime == "" {
 		panic("Illegal execution time")
@@ -23,9 +28,13 @@ func main() {
 	job, err := s.Every(1).Days().At(execTime).Do(checkin)
 
 	if err != nil {
-		_, _ = fmt.Fprintln(file, fmt.Sprintf("Job: %v, Error: %v", job, err))
+		sprintf := fmt.Sprintf("Job: %v, Error: %v", job, err)
+		Log(sprintf)
 	}
-
 	s.StartBlocking()
 
+}
+
+func Log(message string) {
+	_, _ = fmt.Fprintln(file, message)
 }

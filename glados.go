@@ -61,13 +61,13 @@ func checkin() error {
 	} else {
 		return fmt.Errorf("response is nil")
 	}
-
 	response, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return err
 	}
 	body := &resBody{}
 	err = json.Unmarshal(response, body)
+	Log(fmt.Sprintf("check finish with res \n %v \n\n", body))
 	if err != nil {
 		return err
 	}
