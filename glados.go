@@ -37,11 +37,11 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
-	req = buildRequest()
-	cookies = buildCookies(viper.GetString("cookie"))
 }
 
 func checkin() error {
+	req = buildRequest()
+	cookies = buildCookies(viper.GetString("cookie"))
 	timeout := viper.GetInt("timeout") //Set the request expiration time
 	if timeout <= 0 {
 		timeout = DefaultTimeout
@@ -67,7 +67,7 @@ func checkin() error {
 	}
 	body := &resBody{}
 	err = json.Unmarshal(response, body)
-	Log(fmt.Sprintf("check finish with res \n %v \n\n", body))
+	Log(fmt.Sprintf("check finish with res  %s \n", body.Message))
 	if err != nil {
 		return err
 	}

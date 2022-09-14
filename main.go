@@ -18,15 +18,12 @@ func init() {
 	}
 }
 func main() {
-
 	execTime := viper.GetString("execTime")
 	if execTime == "" {
 		panic("Illegal execution time")
 	}
 	s := gocron.NewScheduler(time.UTC)
-
-	job, err := s.Every(1).Days().At(execTime).Do(checkin)
-
+	job, err := s.Every(time.Hour * 16).Do(checkin)
 	if err != nil {
 		sprintf := fmt.Sprintf("Job: %v, Error: %v", job, err)
 		Log(sprintf)
