@@ -34,4 +34,5 @@ func main() {
 
 func Log(message string) {
 	_, _ = fmt.Fprintln(file, message)
+	_ = file.Sync()
 }
