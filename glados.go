@@ -75,7 +75,7 @@ func checkin() error {
 }
 
 func buildRequest() *http.Request {
-	token := "glados.network"
+	token := "glados.one"
 	post := "{\"token\":\"" + token + "\"}"
 	reader := strings.NewReader(post)
 	request, _ := http.NewRequest(http.MethodPost, "https://glados.rocks/api/user/checkin", reader)

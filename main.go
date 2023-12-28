@@ -29,7 +29,11 @@ func main() {
 		Log(sprintf)
 	}
 	s.StartBlocking()
-
+	_, _ = file.WriteString("Finished")
+	if err != nil {
+		return
+	}
+	file.Close()
 }
 
 func Log(message string) {
